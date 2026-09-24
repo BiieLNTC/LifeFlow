@@ -1,19 +1,41 @@
-# segredos
+# ── Segredos ──────────────────────────────
 .env
 .env.*
 !.env.example
 key.properties
 *.jks
 *.keystore
+*.p12
+*.pem
+*.mobileprovision
+google-services.json
+GoogleService-Info.plist
+supabase/.env
 supabase/.temp/
 supabase/.branches/
 
-# dependências / build
+# ── Dependências e build ──────────────────
 node_modules/
 .next/
+out/
 build/
 .dart_tool/
 .gradle/
+.pub-cache/
+.flutter-plugins*
+.packages
+Pods/
+DerivedData/
 *.tsbuildinfo
+coverage/
+
+# ── Local / IDE / SO ──────────────────────
+.idea/
+.vscode/
+*.iml
+local.properties
 .DS_Store
+Thumbs.db
+*.log
+*.swp
 .claude/settings.local.json
