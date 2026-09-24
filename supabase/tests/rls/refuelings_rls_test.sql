@@ -1,0 +1,11 @@
+begin;
+select plan(4);
+insert into auth.users(id,email) values('12000000-0000-0000-0000-000000000001','fuel-a@motora.test'),('12000000-0000-0000-0000-000000000002','fuel-b@motora.test');
+select set_config('request.jwt.claim.sub','12000000-0000-0000-0000-000000000001',true); set local role authenticated;
+insert into public.vehicles(id,vehicle_type,nickname,brand,model) values('22000000-0000-0000-0000-000000000001','car','A','Marca','Modelo');
+select lives_ok($$insert into public.refuelings(id,vehicle_id,refueling_date,odometer,liters,unit_price,total_amount,fuel_type) values('32000000-0000-0000-0000-000000000001','22000000-0000-0000-0000-000000000001','2026-09-20',100,10,5,50,'gasoline')$$,'owner inserts');
+select is((select count(*)::integer from public.refueling_details),1,'owner reads view');
+reset role; select set_config('request.jwt.claim.sub','12000000-0000-0000-0000-000000000002',true); set local role authenticated;
+select is((select count(*)::integer from public.refuelings),0,'other user cannot read table');
+select is((select count(*)::integer from public.refueling_details),0,'other user cannot read view');
+select * from finish(); rollback;

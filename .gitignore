@@ -1,0 +1,19 @@
+# segredos
+.env
+.env.*
+!.env.example
+key.properties
+*.jks
+*.keystore
+supabase/.temp/
+supabase/.branches/
+
+# dependências / build
+node_modules/
+.next/
+build/
+.dart_tool/
+.gradle/
+*.tsbuildinfo
+.DS_Store
+.claude/settings.local.json

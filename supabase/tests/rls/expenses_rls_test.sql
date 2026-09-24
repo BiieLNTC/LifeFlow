@@ -1,0 +1,11 @@
+begin;
+select plan(4);
+insert into auth.users(id,email) values('13000000-0000-0000-0000-000000000001','expense-a@motora.test'),('13000000-0000-0000-0000-000000000002','expense-b@motora.test');
+select set_config('request.jwt.claim.sub','13000000-0000-0000-0000-000000000001',true); set local role authenticated;
+insert into public.vehicles(id,vehicle_type,nickname,brand,model) values('23000000-0000-0000-0000-000000000001','car','A','Marca','Modelo');
+select lives_ok($$insert into public.expenses(id,vehicle_id,category,expense_date,amount,description) values('33000000-0000-0000-0000-000000000001','23000000-0000-0000-0000-000000000001','toll','2026-09-20',20,'Pedágio')$$,'owner inserts');
+select is((select count(*)::integer from public.financial_entries),1,'owner reads consolidated entry');
+reset role; select set_config('request.jwt.claim.sub','13000000-0000-0000-0000-000000000002',true); set local role authenticated;
+select is((select count(*)::integer from public.expenses),0,'other user cannot read expense');
+select is((select count(*)::integer from public.financial_entries),0,'other user cannot read consolidated view');
+select * from finish(); rollback;

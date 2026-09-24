@@ -1,0 +1,11 @@
+begin;
+select plan(5);
+select has_table('public','expenses','expenses table exists');
+select col_type_is('public','expenses','amount','numeric(14,2)','amount has explicit precision');
+insert into auth.users(id,email) values('13000000-0000-0000-0000-000000000001','expense@motora.test');
+select set_config('request.jwt.claim.sub','13000000-0000-0000-0000-000000000001',true); set local role authenticated;
+insert into public.vehicles(id,vehicle_type,nickname,brand,model) values('23000000-0000-0000-0000-000000000001','car','Carro','Marca','Modelo');
+select lives_ok($$insert into public.expenses(id,vehicle_id,category,expense_date,amount,description) values('33000000-0000-0000-0000-000000000001','23000000-0000-0000-0000-000000000001','insurance','2026-09-20',500,'Seguro')$$,'accepts valid expense');
+select throws_ok($$insert into public.expenses(id,vehicle_id,category,expense_date,amount,description) values('33000000-0000-0000-0000-000000000002','23000000-0000-0000-0000-000000000001','other','2026-09-20',0,'Inválida')$$,'23514',null,'rejects zero amount');
+select is((select count(*)::integer from public.financial_entries where source='expense'),1,'manual expense appears once in consolidated view');
+select * from finish(); rollback;
